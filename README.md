@@ -17,3 +17,11 @@ Flow Diagram
 </p>
 
 ---
+
+Architecture
+
+<p align="center">
+  <img src="./imgs/architecture.png"/></a>&nbsp
+</p>
+
+---
