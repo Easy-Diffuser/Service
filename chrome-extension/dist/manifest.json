@@ -1,0 +1,44 @@
+{
+  "name": "Easy Diffuser",
+  "version": "0.1.0",
+  "icons": {
+    "16": "./images/icon_16.png",
+    "32": "./images/icon_32.png",
+    "48": "./images/icon_48.png",
+    "128": "./images/icon_128.png"
+  },
+  "description": "A Chrome extension making it easier to generate images using Stable Diffusion.",
+  "web_accessible_resources": [
+    "entry.js"
+  ],
+  "background": {
+    "scripts": [
+      "background.js",
+      "main.js"
+    ],
+    "persistent": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*/*",
+        "http://*/*"
+      ],
+      "js": [
+        "content.js"
+      ]
+    }
+  ],
+  "browser_action": {
+    "default_title": "Easy Diffuser"
+  },
+  "manifest_version": 2,
+  "permissions": [
+    "https://*/*",
+    "http://*/*",
+    "tabs",
+    "webRequest",
+    "webRequestBlocking",
+    "contextMenus"
+  ]
+}

@@ -1,34 +1,35 @@
-# Easy Diffuser
+# Easy Diffuser / Chrome Extension
 
 ![logo](https://github.com/Easy-Diffuser/Service/raw/main/imgs/logo.jfif)
 
 [README_KOR](./README_KOR.md)
 
-Easy Diffuser is a chrome extension that handles user interaction. The chrome extension sends image to ML model, gets images or tokens as response to support Stable Diffusion users.
+Easy Diffuser / Chrome Extension is a chrome extension that handles user interaction. The chrome extension sends image to ML model, gets images or tokens as response to support Stable Diffusion users.
 
 # Table of Contents
 
-1.[Features](#features)
-
-2.[Installation](#installation)
-
-3.[Getting Started](#getting-started)
-
-4.[Support and Feeback](#support-and-feedback)
-
-5.[About Easy Diffuser](#about-easy-diffuser)
-
-6.[Licenses](#licensed)
+1. [Features](#features)
+2. [Installation](#installation)
+3. [Getting Started](#getting-started)
+4. [Support and Feeback](#support-and-feedback)
+5. [About Easy Diffuser](#about-easy-diffuser)
+6. [Licenses](#licensed)
 
 ---
 
 ## Features
 
+The chrome extension itself is built with React using *https://github.com/segmentio/chrome-sidebar* and it only holds side bar function. Technically, the extension supports sidebar that provides iframe view of a page and function that imports image from menu. This implementation can be found in _./dist_ directory.
+
+A single page application inside chrome extension supports main logic of functions for UI of Easy Diffuser. This implementation can be found in _./local_ directory.
+
+The single page application is handled by server.py in _./local_ and supports GET (serves html) and POST (import image to the application) methods.
+
 #### User Interface
 
 ![1686053204456](image/README/1686053204456.png)
 
-This is the UI of the chrome extension.
+This is the UI of the chrome extension. The UI is implemented simple html, css, and javascript. The style of UI elements followed that of Material theme and used Materialize CSS for style.
 
 **Import an image**
 
@@ -37,6 +38,32 @@ This is the UI of the chrome extension.
 When right-clicking on the image in any webpage, the menu will show 'Import to Easy Diffuser' button. This button imports image into Easy Diffuser chrome extension.
 
 ![1686053693808](image/README/1686053693808.png)
+
+This function is implemented by sending http POST request from chrome extension to page application. This implementation is in _./dist/main.js_ as below:
+
+```javascript
+sendToEasyDiffuser = async function (context) {
+  var imageUrl = context.srcUrl;
+
+  const Url = "http://127.0.0.1:9889";
+
+  const response = await fetch(Url, {
+    headers: {
+      "content-type": "text/plain",
+    },
+    body: imageUrl,
+    method: "POST",
+  });
+
+  return response.json();
+};
+
+chrome.contextMenus.create({
+  title: "Easy Diffuser로 불러오기",
+  contexts: ["image"], // ContextType
+  onclick: sendToEasyDiffuser, // A callback function
+});
+```
 
 **Choose a feature by selecting a radio button**
 
@@ -82,26 +109,15 @@ By clicking 'Copy Positive' and 'Copy Negative' buttons, tags can be easily copi
 
 1. Move to `chrome://extensions/` page
 2. Toggle 'Developer Mode' button on right-top of the page
-3. Import chrome extension in _./chrome-extension/dist_
-4. Clone the repository: `git clone https://huggingface.co/leeyunjai/img2txt`
-5. Define the software version using the `Requirements.txt` file in the `Easy-Diffuser/Model` folder.
-6. Insert the following code into the `webui-user.bat` file: `set COMMANDLINE_ARGS=--api`
-7. The installation is now complete.
+3. Import chrome extension in _./dist_
 
 ## Getting Started
 
 1. run local with http server
 
 ```bash
-
-cd ./chrome-extension/local
-
+cd local
 python server.py
-
-cd ../../model
-
-python http_run.py
-
 ```
 
 2. open chrome extension by clicking button
